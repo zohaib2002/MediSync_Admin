@@ -67,8 +67,10 @@ class SearchBox extends StatelessWidget {
 
 class Appointment {
 
-  String patientName = "";
+  String patientName;
   DateTime? startDateTIme;
   String? PID;
+
+  Appointment({required this.PID, required this.patientName, required this.startDateTIme});
 
 }
