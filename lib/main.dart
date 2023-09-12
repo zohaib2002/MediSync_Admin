@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:medisync/dashboard.dart';
+import 'package:medisync/departmentScreen.dart';
 import 'package:medisync/login.dart';
 import 'package:medisync/register.dart';
 
@@ -24,7 +25,8 @@ void main() {
 
         '/': (context) => const Login(),
         '/register' : (context) => const Register(),
-        '/dashboard' : (context) => const Dashboard()
+        '/dashboard' : (context) => const Dashboard(),
+        '/department' : (context) => const DepartmentScreen(),
 
       },
     ),

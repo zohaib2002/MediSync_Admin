@@ -3,10 +3,26 @@ import 'package:medisync/global.dart';
 
 
 // List of Dummy appoinemts
-Appointment dummyAppoinment = Appointment(PID: 'P123', patientName: 'John Smith Johnson', startDateTIme: DateTime.now());
+Appointment dummyAppoinment = Appointment(PID: 'P123', patientName: 'John Smith Johnson', startDateTIme: DateTime.now(), contact: "+91 98921 65452");
+Doctor dummyDoctor = Doctor(DRID: 'DR123', doctorName: "Dr. James Brown");
+
 
 List<Appointment> dummyAppointments = [];
+List<Doctor> dummyDoctors = [];
 
+List<Department> dummyDepartments = [];
+
+
+TextStyle boldStyle = const TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 16.0
+);
+
+  TextStyle boldStyleOrange = const TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 16.0,
+  color: Color(0xffff6347)
+);
 
 
 class Dashboard extends StatefulWidget {
@@ -19,27 +35,26 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
 
 
-  double containerHeight = 400;
-
-  TextStyle boldStyle = const TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 16.0
-  );
-
-   TextStyle boldStyleOrange = const TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 16.0,
-    color: Color(0xffff6347)
-  );
+  double containerHeight = 450;
 
 
   @override
   Widget build(BuildContext context) {
 
-    // Initializing dummy appointments
-    for (int i=0; i<4; i++) {
+    // Initializing dummy appointments and doctors
+
+    for (int i=0; i<6; i++) {
       dummyAppointments.add(dummyAppoinment);
+      dummyDoctors.add(dummyDoctor);
     }
+
+
+    dummyDepartments = [
+       Department(DID: "D123", departmentName: "Emergency Department", doctors: dummyDoctors),
+        Department(DID: "D123", departmentName: "Cardiology Department", doctors: dummyDoctors),
+        Department(DID: "D123", departmentName: "Orthopedic Department", doctors: dummyDoctors),
+        Department(DID: "D123", departmentName: "Neurology Department", doctors: dummyDoctors),
+    ];
 
 
 
@@ -74,7 +89,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
                             borderRadius: BorderRadius.circular(12.0),
                             color: Colors.white),
-                      height: containerHeight,
+                      height: 400,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50),
                         child: Column(
@@ -112,8 +127,8 @@ class _DashboardState extends State<Dashboard> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: 
-                                  ["Emergency Department", "Cardiology Department", "Orthopedic Department", "Neurology Department"]
-                                  .map((category) => Padding(
+                                  dummyDepartments
+                                  .map((department) => Padding(
                                     padding: const EdgeInsets.all(20.0),
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -124,7 +139,9 @@ class _DashboardState extends State<Dashboard> {
                                           borderRadius: BorderRadius.circular(8.0),
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/department', arguments: department);
+                                      },
                                       child: Padding(
                                         padding: const EdgeInsets.all(50.0),
                                         child: Row(
@@ -136,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
                                             SizedBox(width: 20,),
 
                                             Text(
-                                              category,
+                                              department.departmentName,
                                               style: TextStyle(
                                                 fontSize: 20.0,
                                                 fontWeight: FontWeight.bold
@@ -156,6 +173,12 @@ class _DashboardState extends State<Dashboard> {
                               children: [
                                 TextButton(
                                 onPressed: (){
+                                  showDialog(
+                                    context: context, 
+                                    builder: (BuildContext context) {
+                                      return AddDepartmentDailog();
+                                    }
+                                  );
                                   //Navigator.popAndPushNamed(context, '/dashboard');
                                 },
                                 style: TextButton.styleFrom(
@@ -325,7 +348,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
 
                             Container(
-                              height: 275,
+                              height: containerHeight - 125,
                               child: ListView(
                                 children: dummyAppointments.map((app) => AppointmentTile(appointment: app)).toList(),
                               ),
@@ -386,7 +409,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
 
                             Container(
-                                  height: 275,
+                                  height: containerHeight - 125,
                                   child: ListView(
                                     children: dummyAppointments.map((app) => AppointmentTile(appointment: app)).toList(),
                                   ),
@@ -445,7 +468,7 @@ class _DashboardState extends State<Dashboard> {
                             ),
 
                             Container(
-                                  height: 275,
+                                  height: containerHeight - 125,
                                   child: ListView(
                                     children: dummyAppointments.map((app) => AppointmentTile(appointment: app, cancelButton: false,)).toList(),
                                   ),
@@ -595,20 +618,32 @@ class _DashboardState extends State<Dashboard> {
                         padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 50),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children: [
                             Text(
-                              "Doctor Attendance",
-                              style: TextStyle(
+                              "Doctor Attendance - ${DateTime.now().toLocal().toString().split(' ')[0]}",
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20.0,
                               ),
                             ),
+
+                            const SizedBox(height: 20.0,),
+
+                            SearchBox(onchangedfunction: (){}, hintTextString: "Search Doctors",),
 
                             const Divider(
                               height: 20.0,
                               //color: Colors.black,
                               thickness: 1.0,
                             ),
+
+
+                            Container(
+                              height: 270,
+                              child: ListView(
+                                children: dummyDoctors.map((doc) => DoctorCard(doctor: doc,)).toList(),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -684,6 +719,10 @@ class _AppointmentTileState extends State<AppointmentTile> {
                           const SizedBox(height: 10.0,),
                           Text(
                             'Appointment Date: ${widget.appointment.startDateTIme!.hour} : ${widget.appointment.startDateTIme!.minute}'
+                          ),
+                          const SizedBox(height: 10.0,),
+                          Text(
+                            'Contact: ${widget.appointment.contact}'
                           )
                         ],
                       ),
@@ -732,15 +771,158 @@ class _AppointmentTileState extends State<AppointmentTile> {
 
 
 class DoctorCard extends StatefulWidget {
-  const DoctorCard({super.key});
+  DoctorCard({super.key, required this.doctor});
+
+  Doctor doctor;
 
   @override
   State<DoctorCard> createState() => _DoctorCardState();
 }
 
 class _DoctorCardState extends State<DoctorCard> {
+
+  bool _isChecked = false;
+
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      padding: EdgeInsets.all(10.0),
+      margin: EdgeInsets.symmetric(vertical: 10.0),
+      height: 75,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          color: Colors.grey,
+          width: 0.5,
+        ),
+      ),
+      child: Row(
+        children: [
+
+          SizedBox(width: 15.0,),
+
+          CircleAvatar(
+            radius: 20.0,
+            backgroundColor: Colors.grey,
+          ),
+
+          SizedBox(width: 10.0,),
+
+          Text(
+            widget.doctor.doctorName,
+            style: TextStyle(
+              fontSize: 16.0
+            ),
+          ),
+
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Checkbox(
+                  activeColor: Color(0xff008000),
+                  value: _isChecked,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _isChecked = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          )
+
+        ],
+      ),
+
+    );
+  }
+}
+
+
+
+// Add Department Pop Up
+class AddDepartmentDailog extends StatefulWidget {
+  const AddDepartmentDailog({super.key});
+
+  @override
+  State<AddDepartmentDailog> createState() => _AddDepartmentDailogState();
+}
+
+class _AddDepartmentDailogState extends State<AddDepartmentDailog> {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Department ID: ", style: boldStyle,),
+                Text("1231", style: boldStyleOrange,)
+              ],
+            ),
+
+            SizedBox(height: 20,),
+
+            SizedBox(
+              width: 400,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const TextField(
+                    decoration: InputDecoration(
+                      hintText: "Department Name",
+                      border: UnderlineInputBorder(),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20,),
+
+                  TextButton(
+                    onPressed: (){
+                      //Navigator.popAndPushNamed(context, '/dashboard');
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Color(0xff0073e6),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0)
+                      )
+                    ),
+                    child: const Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
+                      child: Text(
+                        "Add a New Department",
+                        style:  TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.white
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20,),
+                ],
+              ),
+            )
+
+          ],
+        ),
+      ),
+      );
   }
 }

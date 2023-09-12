@@ -69,8 +69,35 @@ class Appointment {
 
   String patientName;
   DateTime? startDateTIme;
+  String contact;
   String? PID;
 
-  Appointment({required this.PID, required this.patientName, required this.startDateTIme});
+  Appointment({required this.PID, required this.patientName, required this.startDateTIme, this.contact=""});
+
+}
+
+
+
+class Doctor {
+
+  String doctorName;
+  String DRID;
+  String contact;
+
+  Doctor({required this.DRID, required this.doctorName, this.contact=""});
+
+
+}
+
+
+
+class Department {
+
+  final String departmentName;
+  final String DID;
+
+  List<Doctor>? doctors;
+
+  Department({required this.DID, required this.departmentName, this.doctors});
 
 }
